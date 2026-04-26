@@ -24,12 +24,12 @@ jobs:
 
       - name: Build Android APK
         run: |
-          # التعديل هنا: تحديد ملف التشغيل الرئيسي مباشرة لضمان عدم ضياع المحرك
-          flet build apk main.py --suppress-flutter-warnings
+          # حذفنا الأمر المسبب للخطأ وتركنا الأمر الأساسي فقط للبناء
+          flet build apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: AlSafi-Pro-App
-          # التعديل هنا: استخدام مسار مباشر أكثر دقة لما ينتجه Flet
-          path: build/apk/*.apk
+          # هذا المسار سيبحث عن ملف الـ APK في أي مكان نتج فيه
+          path: "**/build/apk/*.apk"
