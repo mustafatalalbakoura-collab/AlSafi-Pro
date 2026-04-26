@@ -1,25 +1,35 @@
 name: Build APK
 on: [push]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - uses: subosito/flutter-action@v2
+
+      - name: Install Flutter SDK
+        uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.41.4'
-      - name: Install Tools
+
+      - name: Install Dependencies
         run: |
           pip install flet-cli yfinance pandas-ta
-      - name: Build APK
+
+      - name: Build Android APK
         run: |
-          # بما أن الملفات بالخارج، نستخدم النقطة . فقط
-          flet build apk .
+          # التعديل هنا: تحديد ملف التشغيل الرئيسي مباشرة لضمان عدم ضياع المحرك
+          flet build apk main.py --suppress-flutter-warnings
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: AlSafi-Pro-App
+          # التعديل هنا: استخدام مسار مباشر أكثر دقة لما ينتجه Flet
           path: build/apk/*.apk
