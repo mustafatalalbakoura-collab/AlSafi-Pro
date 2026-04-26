@@ -5,35 +5,28 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Java 17
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install Flet CLI
+      - name: Install Tools
         run: |
           pip install flet-cli yfinance pandas-ta
 
-      - name: Setup Flutter Environment
+      - name: Build APK
         run: |
-          # هذه الخطوة هي التي ستحل المشكلة؛ نقوم بتحميل Flutter مسبقاً يدوياً
-          git clone https://github.com/flutter/flutter.git -b stable --depth 1
-          echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
-          export PATH="$PATH:$GITHUB_WORKSPACE/flutter/bin"
-          flutter doctor
+          # نستخدم أمر الموافقة التلقائية لضمان عدم توقف البناء
+          yes | flet build apk --no-interactive
 
-      - name: Build Android APK
-        run: |
-          # استخدام --no-interactive يمنع Flet من طرح أي أسئلة
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: AlSafi-Pro-App
+          path: "build/apk/*.apk"
           flet build apk --no-interactive
 
       - name: Upload APK
