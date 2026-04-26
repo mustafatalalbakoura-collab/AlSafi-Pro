@@ -6,35 +6,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-
       - name: Install Tools
-        run: |
-          pip install flet-cli yfinance pandas-ta
-
+        run: pip install flet-cli yfinance pandas-ta
       - name: Build APK
-        run: |
-          # نستخدم أمر الموافقة التلقائية لضمان عدم توقف البناء
-          yes | flet build apk --no-interactive
-
-      - name: Upload APK
+        run: yes | flet build apk --no-interactive
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: AlSafi-Pro-App
-          path: "build/apk/*.apk"
-          flet build apk --no-interactive
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: AlSafi-Pro-App
-          path: "**/build/apk/*.apk"
-        uses: actions/upload-artifact@v4
-        with:
-          name: AlSafi-Pro-App
-          path: "**/build/apk/*.apk"
+          path: build/apk/*.apk
