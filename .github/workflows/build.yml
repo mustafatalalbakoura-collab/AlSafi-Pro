@@ -14,26 +14,33 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.22.0'
-
-      - name: Install Flet and Deps
+      - name: Install Flet CLI
         run: |
           pip install flet-cli yfinance pandas-ta
 
-      - name: Build APK
+      - name: Setup Flutter Environment
         run: |
-          # إضافة --verbose هنا ستكشف لنا "كل شيء" لو حدث خطأ، لكنها لن تحدث بإذن الله مع هذه الإصدارات
-          flet build apk --verbose
+          # هذه الخطوة هي التي ستحل المشكلة؛ نقوم بتحميل Flutter مسبقاً يدوياً
+          git clone https://github.com/flutter/flutter.git -b stable --depth 1
+          echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
+          export PATH="$PATH:$GITHUB_WORKSPACE/flutter/bin"
+          flutter doctor
+
+      - name: Build Android APK
+        run: |
+          # استخدام --no-interactive يمنع Flet من طرح أي أسئلة
+          flet build apk --no-interactive
 
       - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: AlSafi-Pro-App
+          path: "**/build/apk/*.apk"
         uses: actions/upload-artifact@v4
         with:
           name: AlSafi-Pro-App
