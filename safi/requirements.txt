@@ -1,0 +1,3 @@
+flet
+yfinance
+pandas-ta
