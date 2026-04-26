@@ -5,10 +5,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Java 17
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
@@ -24,16 +23,18 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Build Application
+      - name: Build
         run: |
-          pip install flet-cli yfinance pandas-ta
-          # السر هنا: أمر واحد بسيط ومباشر مع printf لإرسال "y" يدوياً
-          # دون استخدام أي Flags تسبب أخطاء unrecognized arguments
-          printf 'y\n' | flet build apk
-
-      - name: Upload APK
+          # 1. تثبيت flet-cli فقط هنا
+          pip install flet-cli
+          
+          # 2. بناء التطبيق وتمرير المكتبات كأوامر مباشرة 
+          # هذا يتجاوز أي خطأ في ملف requirements.txt
+          flet build apk --no-interactive --include-packages flet yfinance pandas-ta
+          
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: AlSafi-Pro-App
-          path: "**/build/apk/*.apk"
+          path: "build/apk/*.apk"
           
