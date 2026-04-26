@@ -8,28 +8,33 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Install Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Install Flutter SDK
+      - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.41.4'
+          flutter-version: '3.22.0'
 
-      - name: Install Dependencies
+      - name: Install Flet and Deps
         run: |
           pip install flet-cli yfinance pandas-ta
 
-      - name: Build Android APK
+      - name: Build APK
         run: |
-          # حذفنا الأمر المسبب للخطأ وتركنا الأمر الأساسي فقط للبناء
-          flet build apk
+          # إضافة --verbose هنا ستكشف لنا "كل شيء" لو حدث خطأ، لكنها لن تحدث بإذن الله مع هذه الإصدارات
+          flet build apk --verbose
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: AlSafi-Pro-App
-          # هذا المسار سيبحث عن ملف الـ APK في أي مكان نتج فيه
           path: "**/build/apk/*.apk"
