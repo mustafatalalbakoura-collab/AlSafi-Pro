@@ -18,12 +18,11 @@ jobs:
 
       - name: Build APK
         run: |
-          # التوجيه للمجلد المخفي .safi بدقة
-          flet build apk .safi
+          # بناء التطبيق من الواجهة الرئيسية مباشرة
+          flet build apk main.py
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: AlSafi-Pro-App
-          # البحث عن الملف الناتج في المسار الصحيح
           path: build/apk/*.apk
